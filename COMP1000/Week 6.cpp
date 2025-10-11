@@ -1,7 +1,9 @@
 #include <cmath>
+#include <cstdlib>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
+#include <vector>
 
 void task1() {
     std::ofstream myFile("myFile.txt");
@@ -25,8 +27,78 @@ void task1() {
     myFile.close();
 }
 
+int digitToNumber(char c) {
+    if (isdigit(c)) {
+        // If it's a digit, offset the byte's value by that of the '0' char
+        // This will give the value as an int, due to how chars are layed out
+        return c - '0'; 
+    }
+
+    // It failed
+    return -1;
+}
+
+void printIntVector(std::vector<int>& nums) {
+    std::cout << "Here's all the numbers: ";
+
+    for (const int& i: nums) {
+        std::cout << i << ", ";
+    }
+
+    std::cout << "and... nothing else!" << std::endl;
+}
+
+void readInts(std::string &currentLine) {
+    int numbuf = 0;
+    bool empty = true;
+    std::vector<int> numbers;
+    
+    for (char& c: currentLine) {
+        int digit = digitToNumber(c);
+
+        if (digit == -1) {
+            // Given digit isn't a number, add buffer to vector if numbuf isn't empty
+            if (empty) continue;
+            numbers.push_back(numbuf);
+            numbuf = 0;
+            empty = true;
+        } else {
+            numbuf = (numbuf * 10) + digit;
+            empty = false;
+        }
+    }
+
+    // If there's no end character, just double check for anything in the buffer
+    // If there's something, push it to the vector
+    if (!empty) {
+        numbers.push_back(numbuf);
+        numbuf = 0;
+        empty = true;
+    }
+
+    printIntVector(numbers);
+}
+
+void task2() {
+    std::string currentLine;
+    std::ifstream myFile("COMP1000/Week 6/Task2.txt");
+
+    while (std::getline(myFile, currentLine)) {
+        std::cout << currentLine << std::endl;
+
+        // Does line start with 'positive ints:'?
+        // If so, manually handle each of them
+        if (currentLine.rfind("positive ints:", 0) == 0) {
+            readInts(currentLine);
+        }
+    }
+
+    myFile.close();
+}
+
 int main() {
-    task1();
+    // task1();
+    task2();
 
     return 0;
 }
