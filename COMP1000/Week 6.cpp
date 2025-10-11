@@ -97,7 +97,7 @@ void task2() {
     std::ifstream myFile("COMP1000/Week 6/Task2.txt");
 
     if (!myFile.is_open()) {
-        std::cerr << "There was a problem creating 'myFile.txt'" << std::endl;
+        std::cerr << "There was a problem opening 'myFile.txt'" << std::endl;
 
         if (myFile.fail()) {
             std::cerr << "Errors: " << std::strerror(errno) << std::endl;
@@ -119,9 +119,45 @@ void task2() {
     myFile.close();
 }
 
+void task3() {
+    std::ifstream readFile("COMP1000/Week 6/Task3.txt");
+
+    if (!readFile.is_open()) {
+        std::cerr << "There was a problem opening 'readFile.txt'" << std::endl;
+
+        if (readFile.fail()) {
+            std::cerr << "Errors: " << std::strerror(errno) << std::endl;
+        }
+
+        return;
+    }
+
+    std::ofstream writeFile("taskOutput/writeFile.txt");
+
+    if (!writeFile.is_open()) {
+        std::cerr << "There was a problem creating 'writeFile.txt'" << std::endl;
+
+        if (writeFile.fail()) {
+            std::cerr << "Errors: " << std::strerror(errno) << std::endl;
+        }
+
+        readFile.close(); // Make sure the reading file is closed
+        return;
+    }
+
+    char currentChar;
+
+    while (readFile.get(currentChar)) {
+        writeFile.put(currentChar);
+    }
+
+    writeFile.close();
+}
+
 int main() {
     task1();
     task2();
+    task3();
 
     return 0;
 }
