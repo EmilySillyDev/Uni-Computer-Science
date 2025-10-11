@@ -68,6 +68,7 @@ void task5() {
     char* cString = static_cast<char*>(malloc(sizeof(char) * 20));
     std::cin.getline(cString, 20);
     std::cout << cString << " (Size: " << strlen(cString) << ")" << std::endl;
+    free(cString);
 }
 
 int main() {
