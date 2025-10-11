@@ -1,5 +1,7 @@
+#include <cerrno>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -7,6 +9,17 @@
 
 void task1() {
     std::ofstream myFile("myFile.txt");
+
+    if (!myFile.is_open()) {
+        std::cerr << "There was a problem creating 'myFile.txt'" << std::endl;
+
+        if (myFile.fail()) {
+            std::cerr << "Errors: " << std::strerror(errno) << std::endl;
+        }
+
+        return;
+    }
+
     myFile << "My Epic File" << std::endl << std::endl;
 
     myFile << "Here's a bunch of numbers!" << std::endl;
@@ -82,6 +95,16 @@ void readInts(std::string &currentLine) {
 void task2() {
     std::string currentLine;
     std::ifstream myFile("COMP1000/Week 6/Task2.txt");
+
+    if (!myFile.is_open()) {
+        std::cerr << "There was a problem creating 'myFile.txt'" << std::endl;
+
+        if (myFile.fail()) {
+            std::cerr << "Errors: " << std::strerror(errno) << std::endl;
+        }
+
+        return;
+    }
 
     while (std::getline(myFile, currentLine)) {
         std::cout << currentLine << std::endl;
