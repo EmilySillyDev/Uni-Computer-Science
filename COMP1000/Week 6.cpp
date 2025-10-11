@@ -8,7 +8,7 @@
 #include <vector>
 
 void task1() {
-    std::ofstream myFile("myFile.txt");
+    std::ofstream myFile("taskOutput/myFile.txt");
 
     if (!myFile.is_open()) {
         std::cerr << "There was a problem creating 'myFile.txt'" << std::endl;
@@ -120,7 +120,7 @@ void task2() {
 }
 
 int main() {
-    // task1();
+    task1();
     task2();
 
     return 0;
