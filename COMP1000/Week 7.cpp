@@ -227,10 +227,22 @@ void task2() {
 
         for (KVPair &kv : s) {
             std::string key = kv.key;
-            std::string value = kv.value;
+            std::vector<std::string> csv = getCSVData(kv.value);
+            std::string value = "";
+
             key[0] = toupper(key[0]);
+
+            if (csv.size() == 1) {
+                value = csv[0];
+            } else {
+                for (std::string v: csv) {
+                    value += v + ", ";
+                }
+
+                value.erase(value.size() - 2);
+            }
             
-            output += key + ": " + kv.value + ", ";
+            output += key + ": " + value + ", ";
         }
 
         output.erase(output.size() - 2);
