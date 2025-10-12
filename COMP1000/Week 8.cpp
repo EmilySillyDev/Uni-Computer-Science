@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 class Book {
     private:
@@ -50,6 +51,29 @@ class Car {
         }
 };
 
+class Counter {
+    private:
+        // Use the 'inline' keyword to allow inline definition
+        inline static int count = 0;
+
+    public:
+        Counter() {
+            count += 1;
+        }
+
+        ~Counter() {
+            count -= 1;
+        }
+
+        static int getCount() {
+            return count;
+        }
+};
+
+void printCounterValue() {
+    std::cout << Counter::getCount() << std::endl;
+}
+
 int main() {
     Book myBook("The C++ Programming Language", "Bjarne Stroustrup", 39.99);
     myBook.displayInfo();
@@ -68,6 +92,18 @@ int main() {
 
     defaultCar.displayInfo();
     myCar.displayInfo();
+
+    Counter* c1 = new Counter;
+    printCounterValue();
+
+    Counter* c2 = new Counter;
+    printCounterValue();
+
+    Counter* c3 = new Counter;
+    printCounterValue();
+
+    delete c1;
+    printCounterValue();
 
     return 0;
 }
