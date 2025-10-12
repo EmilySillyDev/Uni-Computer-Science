@@ -252,8 +252,117 @@ void task2() {
     json.close();
 }
 
+enum class LOG_TYPE {
+    INFO,
+    ERROR,
+    WARNING,
+    UNKNOWN
+};
+
+class ApplicationLog {
+    protected:
+        LOG_TYPE type;
+        std::string message;
+        std::string timestamp;
+    public:
+        ApplicationLog(LOG_TYPE type, std::string message, std::string timestamp): type(type), message(message), timestamp(timestamp) {} 
+        ApplicationLog(): type(LOG_TYPE::UNKNOWN), message("No message provided"), timestamp("1970-01-01") {}
+        ApplicationLog(std::string input) {
+            // TYPE TIMESTAMP MESSAGE
+            // Type and timestamp have no spaces, so we can delimit with those
+
+            std::string buffer;
+            std::vector<std::string> logInfo;
+
+            for (char& c: input) {
+                bool readingMessage = logInfo.size() == 2; // we have the type and timestamp, we're just getting the message now
+
+                if (c == ' ' && !readingMessage) {
+                    logInfo.push_back(buffer);
+                    buffer = "";
+                    continue;
+                }
+
+                buffer += c;
+            }
+
+            logInfo.push_back(buffer);
+            
+            std::string type_s = logInfo[0];
+            std::string newTimestamp = logInfo[1];
+            std::string newMessage = logInfo[2];
+
+            if (type_s == "ERROR") {
+                type = LOG_TYPE::ERROR;
+            } else if (type_s == "WARNING") {
+                type = LOG_TYPE::WARNING;
+            } else if (type_s == "INFO") {
+                type = LOG_TYPE::INFO;
+            } else {
+                type = LOG_TYPE::UNKNOWN;
+            }
+
+            timestamp = newTimestamp;
+            message = newMessage;
+        }
+
+        std::string getMessage() {return message;}
+        std::string getTimestamp() {return timestamp;}
+        LOG_TYPE getLogType() {return type;}
+};
+
+void task3() {
+    std::ifstream logFile("COMP1000/Week 7/application.log");
+
+    if (!logFile.is_open()) {
+        std::cerr << "There was a problem opening 'application.log'" << std::endl;
+
+        if (logFile.fail()) {
+            std::cerr << "Errors: " << std::strerror(errno) << std::endl;
+        }
+
+        return;
+    }
+
+    std::vector<ApplicationLog> logs;
+    std::string lineBuffer;
+
+    while (getline(logFile, lineBuffer)) {
+        ApplicationLog log(lineBuffer);
+        logs.push_back(log);
+    }
+
+    logFile.close(); // Close the file, we're done reading
+
+    int errors = 0;
+    int warnings = 0;
+    std::vector<ApplicationLog> total;
+
+    for (ApplicationLog &log: logs) {
+        switch (log.getLogType()) {
+            case LOG_TYPE::ERROR:
+                errors++;
+                break;
+            case LOG_TYPE::WARNING:
+                warnings++;
+                break;
+        }
+
+        total.push_back(log);
+    }
+
+    std::cout << "Total Errors: " << errors << std::endl;
+    std::cout << "Total Warnings: " << warnings << std::endl;
+    std::cout << "Lines with ERRORS or WARNINGS:" << std::endl;
+
+    for (ApplicationLog &log: logs) {
+        std::cout << log.getMessage() << std::endl;
+    }
+}
+
 int main() {
-    // task1();
+    task1();
     task2();
+    task3();
     return 0;
 }
